@@ -81,3 +81,6 @@ probes:
       port: http
     initialDelaySeconds: 5
     periodSeconds: 5
+
+anubis:
+  enabled: false

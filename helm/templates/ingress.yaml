@@ -35,7 +35,7 @@ spec:
               service:
                 name: {{ include "wheezy-blog.fullname" $ }}
                 port:
-                  number: {{ $.Values.service.port }}
+                  name: {{ if $.Values.anubis.enabled }}anubis{{ else }}http{{ end }}
           {{- end }}
     {{- end }}
 {{- end }}

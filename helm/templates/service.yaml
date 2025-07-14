@@ -7,6 +7,12 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
+    {{- if .Values.anubis.enabled }}
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      name: anubis
+    {{- end }}
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
