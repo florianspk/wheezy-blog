@@ -1,6 +1,7 @@
 FROM hugomods/hugo:debian-node-git-0.148.1 AS builder
 WORKDIR /src
 COPY . .
+RUN git submodule update --init --recursive
 RUN hugo --minify
 
 FROM nginx:1.13.0-alpine as nginx
