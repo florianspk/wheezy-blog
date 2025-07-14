@@ -1,0 +1,19 @@
+languageCode = "fr"
+languageName = "Français"
+weight = 1
+title = "Wheezy Blog"
+
+[params]
+displayName = "Français"
+isoCode = "fr"
+rtl = false
+dateFormat = "2 Juin 2006"
+logo = "img/wheezy_logo_transparent.png"
+
+[params.author]
+name = "Wheezy Blog"
+email = "florianspk@gmail.com"
+image = "img/wheezy_logo.png"
+imagequality = 50
+headline = "Explorateur curieux des systèmes, je partage ici mes galères et petites victoires en domptant Kubernetes, Talos, Proxmox et tout l’attirail cloud-native"
+links = [{ github = "https://github.com/florianspk" }]
