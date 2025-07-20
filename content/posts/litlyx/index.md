@@ -3,7 +3,7 @@ title: "Litlyx (Web Analytics)"
 date: 2025-07-13
 summary: "Pourquoi j'ai déployé Litlyx sur mon cluster k8s plutôt que d'utiliser Google Analytics ou Matomo"
 tags: ["kubernetes", "analytics", "privacy", "self-hosting", "web"]
-categories: ["tech"]
+categories: ["middleware"]
 featuredImage: "featured.png"
 ---
 
