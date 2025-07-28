@@ -1,6 +1,6 @@
 ---
 title: "Tailscale + pfSense = ♥️"
-date: 2025-08-01
+date: 2025-07-28
 summary: "Un reverse proxy conçu pour bloquer les bots agressifs, les scrapers trop curieux et les attaques automatisées"
 tags: ["Infrastructures", "security", "Réseaux"]
 categories: ["Réseaux"]
