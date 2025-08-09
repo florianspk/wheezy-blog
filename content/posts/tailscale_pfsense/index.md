@@ -1,7 +1,7 @@
 ---
 title: "Tailscale + pfSense = ♥️"
 date: 2025-07-28
-summary: "Un reverse proxy conçu pour bloquer les bots agressifs, les scrapers trop curieux et les attaques automatisées"
+summary: "Déployer Tailscale avec pfSense sous Proxmox"
 tags: ["Infrastructures", "security", "Réseaux"]
 categories: ["Réseaux"]
 featuredImage: "featured.png"
