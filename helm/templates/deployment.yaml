@@ -44,8 +44,6 @@ spec:
                   key: ED25519_PRIVATE_KEY_HEX
             - name: "METRICS_BIND"
               value: ":9090"
-            - name: "SERVE_ROBOTS_TXT"
-              value: "true"
             - name: "TARGET"
               value: "http://localhost:80"
             - name: "OG_PASSTHROUGH"
