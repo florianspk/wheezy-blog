@@ -13,19 +13,12 @@ data:
       - import: (data)/crawlers/_allow-good.yaml
       - import: (data)/clients/x-firefox-ai.yaml
       - import: (data)/common/keep-internet-working.yaml
-      - name: rss-feed-blog
-        action: ALLOW
-        expression:
-          any:
-            - path.startsWith("/rss.")
-
-      # Generic catchall rule
       - name: generic-browser
         user_agent_regex: >-
           Mozilla|Opera
         action: CHALLENGE
         challenge:
-          difficulty: 1 # Number of seconds to wait before refreshing the page
-          report_as: 4 # Unused by this challenge method
-          algorithm: metarefresh # Specify a non-JS challenge method
+          difficulty: 1
+          report_as: 4
+          algorithm: metarefresh
 {{- end }}
