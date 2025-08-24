@@ -30,7 +30,7 @@ spec:
       containers:
 {{- if .Values.anubis.enabled }}
         - name: anubis
-          image: ghcr.io/techarohq/anubis:v1.20.0
+          image: ghcr.io/techarohq/anubis:v1.22.0
           imagePullPolicy: Always
           env:
             - name: "BIND"
@@ -50,8 +50,16 @@ spec:
               value: "http://localhost:80"
             - name: "OG_PASSTHROUGH"
               value: "true"
+            - name: "SERVE_ROBOTS_TXT"
+              value: "false"
             - name: "OG_EXPIRY_TIME"
               value: "24h"
+            - name: "POLICY_FNAME"
+              value: "/etc/anubis/botPolicies.yaml"
+          volumeMounts:
+            - name: policy
+              mountPath: /etc/anubis
+              readOnly: true
           resources:
             limits:
               cpu: 750m
@@ -99,6 +107,11 @@ spec:
           emptyDir: {}
         - name: var-run
           emptyDir: {}
+{{- if .Values.anubis.enabled }}
+        - name: policy
+          configMap:
+            name: anubis-policy
+{{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

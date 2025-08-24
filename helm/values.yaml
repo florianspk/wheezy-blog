@@ -83,4 +83,4 @@ probes:
     periodSeconds: 5
 
 anubis:
-  enabled: false
+  enabled: true
