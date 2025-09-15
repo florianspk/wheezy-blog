@@ -51,13 +51,7 @@ spec:
             - name: "OG_PASSTHROUGH"
               value: "true"
             - name: "OG_EXPIRY_TIME"
-              value: "24h"
-            - name: "POLICY_FNAME"
-              value: "/etc/anubis/botPolicies.yaml"
-          volumeMounts:
-            - name: policy
-              mountPath: /etc/anubis
-              readOnly: true
+              value: "12h"
           resources:
             limits:
               cpu: 750m
@@ -105,11 +99,6 @@ spec:
           emptyDir: {}
         - name: var-run
           emptyDir: {}
-{{- if .Values.anubis.enabled }}
-        - name: policy
-          configMap:
-            name: anubis-policy
-{{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
