@@ -45,13 +45,13 @@ spec:
             - name: "METRICS_BIND"
               value: ":9090"
             - name: "SERVE_ROBOTS_TXT"
-              value: "false"
+              value: "true"
             - name: "TARGET"
               value: "http://localhost:80"
             - name: "OG_PASSTHROUGH"
               value: "true"
             - name: "OG_EXPIRY_TIME"
-              value: "12h"
+              value: "24h"
           resources:
             limits:
               cpu: 750m
