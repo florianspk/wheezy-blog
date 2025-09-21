@@ -239,6 +239,179 @@ kubectl get wf -n argo-workflows
 
 ---
 
+# 📦 Les Artefacts : partager des données entre étapes
+
+Les **artefacts** sont l'un des concepts les plus puissants d'Argo Workflows. Ils permettent de **partager des fichiers et données** entre différentes étapes du workflow, créant ainsi de véritables pipelines de données.
+
+## 🔧 Comment ça fonctionne ?
+
+Un artefact peut être :
+- **Produit** par une étape (output)
+- **Consommé** par une autre étape (input)
+- **Stocké** dans différents backends (S3, GCS, Azure, etc.)
+
+### Exemple : Pipeline avec artefacts
+
+{{< highlight yaml >}}
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: artifacts-pipeline-
+spec:
+  entrypoint: artifact-pipeline
+  templates:
+  - name: artifact-pipeline
+    dag:
+      tasks:
+      - name: generate-data
+        template: data-generator
+
+      - name: process-data
+        dependencies: [generate-data]
+        template: data-processor
+        arguments:
+          artifacts:
+          - name: input-data
+            from: "{{tasks.generate-data.outputs.artifacts.raw-data}}"
+
+      - name: analyze-results
+        dependencies: [process-data]
+        template: data-analyzer
+        arguments:
+          artifacts:
+          - name: processed-data
+            from: "{{tasks.process-data.outputs.artifacts.clean-data}}"
+
+  # --- Générateur de données ---
+  - name: data-generator
+    container:
+      image: alpine:3.20
+      command: [sh, -c]
+      args: |
+        - echo "🔧 Generating raw data..."
+        - mkdir -p /tmp/output
+        - echo "user1,25,engineer" > /tmp/output/data.csv
+        - echo "user2,30,designer" >> /tmp/output/data.csv
+        - echo "user3,28,manager" >> /tmp/output/data.csv
+        - ls -la /tmp/output/
+    outputs:
+      artifacts:
+      - name: raw-data
+        path: /tmp/output
+        archive:
+          none: {}
+
+  # --- Processeur de données ---
+  - name: data-processor
+    inputs:
+      artifacts:
+      - name: input-data
+        path: /tmp/input
+    container:
+      image: alpine:3.20
+      command: [sh, -c]
+      args: |
+        - echo "🧹 Processing input data..."
+        - ls -la /tmp/input/
+        - cat /tmp/input/data.csv
+        - mkdir -p /tmp/output
+        - echo "name,age,role,status" > /tmp/output/processed.csv
+        - sed 's/$/,active/' /tmp/input/data.csv >> /tmp/output/processed.csv
+        - echo "✅ Data processed successfully"
+    outputs:
+      artifacts:
+      - name: clean-data
+        path: /tmp/output
+        archive:
+          none: {}
+
+  # --- Analyseur de résultats ---
+  - name: data-analyzer
+    inputs:
+      artifacts:
+      - name: processed-data
+        path: /tmp/analysis
+    container:
+      image: alpine:3.20
+      command: [sh, -c]
+      args: |
+        - echo "📊 Analyzing processed data..."
+        - echo "Input files:"
+        - ls -la /tmp/analysis/
+        - echo "Content analysis:"
+        - wc -l /tmp/analysis/processed.csv
+        - echo "✅ Analysis complete!"
+{{< /highlight >}}
+
+## 🗂️ Types de stockage d'artefacts
+
+Argo Workflows supporte plusieurs backends pour stocker vos artefacts :
+
+| **Backend** | **Description** | **Cas d'usage** |
+|-------------|-----------------|-----------------|
+| **S3** | Amazon S3 ou compatible | Production, données volumineuses |
+| **GCS** | Google Cloud Storage | Environnements GCP |
+| **Azure** | Azure Blob Storage | Environnements Azure |
+| **Git** | Dépôt Git | Configuration, scripts |
+| **HTTP** | Serveur HTTP/HTTPS | APIs externes |
+
+### Configuration S3 (exemple)
+
+{{< highlight yaml >}}
+# Configuration globale dans le ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: workflow-controller-configmap
+  namespace: argo-workflows
+data:
+  config: |
+    artifactRepository:
+      s3:
+        bucket: my-argo-artifacts
+        endpoint: s3.amazonaws.com
+        accessKeySecret:
+          name: argo-artifacts
+          key: accesskey
+        secretKeySecret:
+          name: argo-artifacts
+          key: secretkey
+{{< /highlight >}}
+
+## 💡 Bonnes pratiques
+
+### 1. Optimiser la taille des artefacts
+```yaml
+outputs:
+  artifacts:
+  - name: logs
+    path: /tmp/logs
+    archive:
+      tar:
+        compressionLevel: 9  # Compression maximale
+```
+
+### 2. Artefacts conditionnels
+```yaml
+outputs:
+  artifacts:
+  - name: error-logs
+    path: /tmp/errors
+    optional: true  # N'échoue pas si le fichier n'existe pas
+```
+
+### 3. Nettoyage automatique
+```yaml
+metadata:
+  labels:
+    workflows.argoproj.io/archive-strategy: "false"
+spec:
+  ttlStrategy:
+    secondsAfterCompletion: 3600  # Supprime après 1h
+```
+
+---
+
 # 🌐 Interface graphique
 
 Argo Workflows possède une **UI très intuitive** pour visualiser et suivre vos workflows.
