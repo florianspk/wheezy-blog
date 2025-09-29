@@ -1,6 +1,6 @@
 ---
 title: "Argo Events 🎯 - Automatisez vos réactions dans Kubernetes"
-date: 2025-09-29
+date: 2025-10-13
 summary: "Fini les CRON jobs approximatifs ! Avec Argo Events, Kubernetes devient un orchestrateur réactif et fiable."
 tags: ["Kubernetes", "GitOps", "DevOps", "Argo", "Events"]
 categories: ["Automation"]

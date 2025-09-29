@@ -1,6 +1,6 @@
 ---
 title: "⚡ Argo Workflows : Transforme tes jobs Kubernetes en pipelines !"
-date: 2025-10-13
+date: 2025-09-29
 summary: "Fini les scripts bash dispersés ! Avec Argo Workflows, orchestrez des pipelines complexes directement dans Kubernetes."
 tags: ["Kubernetes", "GitOps", "DevOps", "Argo", "Workflows"]
 categories: ["Automation"]
