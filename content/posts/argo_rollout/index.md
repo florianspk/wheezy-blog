@@ -1,6 +1,6 @@
 ---
 title: "🚀 Argo Rollouts + NGINX : Déployez sans stress avec des canary qui claquent !"
-date: 2025-10-27
+date: 2025-11-09
 summary: "Fini les déploiements qui font flipper ! Avec Argo Rollouts et NGINX, vos canary deployments deviennent simples, fiables et progressifs 🎯"
 tags: ["Kubernetes", "GitOps", "DevOps", "Argo", "NGINX", "Deployment"]
 categories: ["Deployment", "Canary"]
