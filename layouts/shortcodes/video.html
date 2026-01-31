@@ -1,0 +1,19 @@
+{{- $src := .Get "src" -}}
+{{- $poster := .Get "poster" | default "" -}}
+{{- $autoplay := .Get "autoplay" | default "false" -}}
+{{- $loop := .Get "loop" | default "false" -}}
+{{- $muted := .Get "muted" | default "false" -}}
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin: 2rem 0;">
+  <video
+    controls
+    {{ if eq $autoplay "true" }}autoplay{{ end }}
+    {{ if eq $loop "true" }}loop{{ end }}
+    {{ if eq $muted "true" }}muted{{ end }}
+    {{ with $poster }}poster="{{ . }}"{{ end }}
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <source src="{{ $src }}" type="video/mp4">
+    <source src="{{ $src }}" type="video/webm">
+    Votre navigateur ne supporte pas la lecture de vidéos.
+  </video>
+</div>
