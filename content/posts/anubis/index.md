@@ -145,7 +145,6 @@ bots:
 
 Je trouve que ce fonctionnement n'est pas très intuitif, donc pour pallier ça, j'ai créé une ingress qui ne prend en compte que les requêtes vers `/.*\.(png|jpg|jpeg|gif|ico|svg|webp)$` :
 
-{{< codeimporter url="https://raw.githubusercontent.com/florianspk/argocd-apps-homelab/refs/heads/main/apps/apps-dev/wheezy-blog/extras/wheezy-blog-images.yaml" type="yaml" >}}
 
 ---
 
