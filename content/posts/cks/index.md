@@ -154,7 +154,7 @@ Brancher mon PC portable avant l’examen : l’outil utilisé pour le passage d
 Pendant ma préparation, j'ai condensé les commandes essentielles, les structures YAML critiques et les points de vigilance sur chaque domaine dans un cheat sheet de deux pages. C'est ce que j'aurais voulu avoir dès le premier jour.
 
 Je le mets à disposition gratuitement : 
-👉 **[Télécharger le CKS Cheat Sheet (PDF)](cks-cheatsheet.pdf)**
+{{< pdf src="/files/cks-cheatsheet.pdf" >}}
 
 Il couvre : SecurityContext, PSS, Falco, NetworkPolicy, Admission Controllers, Istio mTLS, Auditing, RBAC, etcd encryption, CIS Benchmarks, SBOM — avec les commandes et les snippets YAML les plus utiles.
 
