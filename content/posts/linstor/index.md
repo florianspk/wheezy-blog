@@ -1,7 +1,7 @@
 ---
 
 title: "Stockage hyperconvergé Kubernetes avec DRBD + LINSTOR"
-date: 2026-04-01
+date: 2026-05-03
 summary: "Construire un stockage distribué performant et hautement disponible pour Kubernetes dans un homelab"
 tags: ["Kubernetes", "Storage", "DevOps", "Homelab"]
 categories: ["Infrastructures"]
@@ -81,7 +81,7 @@ Chaque nœud contribue avec ses **disques locaux**, et les données sont **répl
 * Pas de matériel dédié
 * Haute disponibilité native
 * Scalabilité horizontale (Si on as besoin de plus de disque ou de CPU/RAM il suffit de rajouter une VM)
-* Coût maîtrisé (Il n'y as pas d'autre cout que le compute/licence)
+* Coût maîtrisé (Il n'y as pas d'autre cout que le compute)
 
 👉 C’est exactement ce que je recherchais.
 
@@ -165,40 +165,51 @@ Mais problème 👇
 * Backup cohérent et rapide
 
 ---
-
 # ⚙️ LINSTOR : le cerveau du stockage
 
-**LINSTOR** est la couche qui orchestre DRBD.
+**LINSTOR** est la couche d’orchestration qui pilote **DRBD**.
 
-Il permet de :
+Concrètement, il permet de :
 
-* créer des volumes distribués
-* gérer la réplication
-* exposer un CSI driver Kubernetes
+* provisionner des volumes distribués
+* gérer automatiquement la réplication
+* exposer un driver CSI pour Kubernetes
 
-👉 En gros : **il rend DRBD utilisable dans Kubernetes**
+👉 En résumé : **il transforme DRBD en solution de stockage exploitable dans Kubernetes**
 
 ---
 
-# ☸️ Intégration Kubernetes (Talos)
+# ☸️ Intégration Kubernetes
 
-## 🧩 Architecture finale
+## 🧩 Architecture globale
 
-* DRBD → réplication
-* LVM thin → gestion des volumes
-* LINSTOR → orchestration
-* CSI → intégration Kubernetes
+La stack repose sur plusieurs briques complémentaires :
+
+* **DRBD** → réplication des données entre nœuds
+* **LVM thin** → gestion des volumes et thin provisioning
+* **LINSTOR** → orchestration du stockage
+* **CSI** → intégration native avec Kubernetes
 
 ---
 
 ## 🚀 Déploiement dans Kubernetes
 
-### 1. Installation LINSTOR
+### 1. Installation de Piraeus (LINSTOR pour Kubernetes)
+
+Dans Kubernetes, on ne déploie pas LINSTOR “à la main”.
+On passe par Piraeus Operator, qui automatise toute l’installation.
 
 ```bash
 helm repo add linstor https://charts.linstor.io
-helm install linstor linstor/linstor
+helm install piraeus linstor/linstor
 ```
+
+👉 Cela déploie automatiquement :
+
+* LINSTOR Controller
+* LINSTOR Satellites
+* le CSI driver
+* toute la glue Kubernetes
 
 ---
 
@@ -219,8 +230,8 @@ volumeBindingMode: WaitForFirstConsumer
 
 ### 🔍 Explication
 
-* placementCount: 2 → réplication sur 2 nœuds
-* WaitForFirstConsumer → placement intelligent des pods
+* `placementCount: 2` → réplique le volume sur 2 nœuds
+* `storagePool` → Le type de storage
 
 ---
 
@@ -244,45 +255,43 @@ spec:
 
 ### 4. Résultat
 
-Quand ton pod démarre :
+Au démarrage du pod :
 
-* volume créé automatiquement
-* répliqué via DRBD
-* attaché au bon nœud
+* le volume est provisionné automatiquement
+* les données sont répliquées via DRBD
+* le volume est attaché au nœud optimal
 
-👉 Transparence totale côté Kubernetes
+👉 Tout est **transparent côté Kubernetes**
 
 ---
 
-# 📊 Pourquoi ce choix est parfait pour un homelab
+# 📊 Pourquoi ce choix est idéal en homelab
 
-## ✅ Ce que j’y gagne
+## ✅ Les avantages
 
-* Haute dispo réelle
-* Performances proches du local disk
-* Scalabilité simple
-* Zéro matériel dédié
+* Haute disponibilité réelle (pas du pseudo-HA)
+* Performances proches d’un disque local
+* Scalabilité horizontale simple
+* Aucun besoin de matériel dédié
 
 ## ❌ Les compromis
 
-* Réseau critique (latence importante)
-* Complexité supérieure à NFS
-* Nécessite un minimum de tuning
+* Le réseau devient critique (latence et débit)
+* Plus complexe qu’un simple NFS
+* Nécessite un peu de tuning (DRBD, scheduler, etc.)
 
 ---
 
 # ✅ Conclusion
 
-Avec cette stack **DRBD + LINSTOR + LVM thin**, j’ai construit un stockage :
+Avec la stack **DRBD + LINSTOR + LVM thin**, on obtient un stockage :
 
 * ⚡ performant
-* 🔁 hautement disponible
-* 🧠 parfaitement intégré à Kubernetes
+* 🔁 résilient
+* 🧠 totalement intégré à Kubernetes
 
-👉 C’est clairement un game changer dans un homelab.
-
-On se rapproche énormément des architectures enterprise… sans le coût.
+On se rapproche clairement des standards **enterprise**, sans en avoir le coût… ni la rigidité.
 
 Et surtout :
 
-> c’est beaucoup plus fun qu’un NFS 😄
+> c’est quand même beaucoup plus fun qu’un NFS 😄
